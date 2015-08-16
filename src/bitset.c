@@ -4,8 +4,8 @@
 void
 bitset_init (struct bitset *h, size_t size)
 {
-  h->size = max (1, size);
-  h->buckets = calloc (max (1, h->size / 32), sizeof (uint32_t));
+  h->size = max (32, size);
+  h->buckets = calloc (h->size / 32, sizeof (uint32_t));
 }
 
 void
@@ -36,7 +36,7 @@ bitset_dump (struct bitset *h, FILE * f, const char *name)
   fprintf (f, "#include \"bitset.h\"\n");
   fprintf (f, "const struct bitset %s_bitset = {\n", name);
   fprintf (f, "  .size = %zu,\n", h->size);
-  fprintf (f, "  .buckets = (uint32_t[]) {\n");
+  fprintf (f, "  .buckets = (uint32_t[%zu]) {\n", h->size / 32);
   for (i = 0; i < h->size / 32; i++) {
     if (i % 4 == 0)
       fprintf (f, "    ");

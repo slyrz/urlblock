@@ -100,7 +100,7 @@ stringset_dump (struct stringset *h, FILE * f, const char *name)
   fprintf (f, "#include \"stringset.h\"\n");
   fprintf (f, "const struct stringset %s_stringset = {\n", name);
   fprintf (f, "  .size = %zu,\n", h->size);
-  fprintf (f, "  .buckets = (char *[]) {\n");
+  fprintf (f, "  .buckets = (char *[%zu]) {\n", h->size);
   for (i = 0; i < h->size; i++) {
     char *b = h->buckets[i];
     if (b == NULL)
