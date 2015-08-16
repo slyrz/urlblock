@@ -14,6 +14,6 @@ void stringset_init (struct stringset *, size_t);
 void stringset_free (struct stringset *);
 void stringset_add (struct stringset *, uint32_t, const char *, unsigned char);
 int stringset_contains (struct stringset *, uint32_t, const char *, unsigned char *);
-void stringset_dump (struct stringset *, FILE *, const char *);
+void stringset_dump (struct stringset *, FILE *, const char *, int);
 
 #endif

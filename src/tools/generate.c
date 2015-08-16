@@ -115,7 +115,7 @@ main (int argc, char **argv)
     stringset_add (&s, hash, line, mask);
   }
 
-  stringset_dump (&s, stdout, namestr);
+  stringset_dump (&s, stdout, namestr, type != PATHS);
   bitset_dump (&b, stdout, namestr);
 
   stringset_free (&s);

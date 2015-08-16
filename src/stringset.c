@@ -93,7 +93,7 @@ stringset_contains (struct stringset *h, uint32_t key, const char *value, unsign
 }
 
 void
-stringset_dump (struct stringset *h, FILE * f, const char *name)
+stringset_dump (struct stringset *h, FILE * f, const char *name, int exact)
 {
   size_t i;
 
@@ -106,8 +106,15 @@ stringset_dump (struct stringset *h, FILE * f, const char *name)
     if (b == NULL)
       fprintf (f, "    NULL,\n");
     else
-      for (; *b; b += 2 + *b)
-        fprintf (f, "    \"\\x%02x\\x%02x\" \"%.*s\"%s\n", b[0] & 0xff, b[1] & 0xff, b[0], b + 2, (b[2 + *b]) ? "" : ",");
+      for (; *b; b += 2 + *b) {
+        fprintf (f, "    \"\\x%02x\\x%02x\" \"%.*s%s\"%s\n",
+            (b[0] + exact) & 0xff,
+            b[1] & 0xff,
+            b[0] & 0xff,
+            b + 2,
+            &"\0\\0"[exact],
+            (b[2 + *b]) ? "" : ",");
+      }
   }
   fprintf (f, "  },\n");
   fprintf (f, "};\n\n");
