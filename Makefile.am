@@ -39,6 +39,9 @@ CLEANFILES = \
 	data/paths.c \
 	data/tlds.c
 
+data/%.txt:
+	touch $@
+
 data/hosts.c: data/hosts.txt generate
 	./generate -t hosts -b 0.10 -h 2.0 $< > $@
 
