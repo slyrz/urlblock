@@ -47,6 +47,7 @@ block (const char *fmt, ...)
   assert (url_parse (&url, str) == 0);
   free (str);
   va_end(ap);
+
   return url_block (&url);
 }
 
@@ -73,9 +74,27 @@ test_host (const char *needle, size_t len)
   assert (!block ("http://another.subdomain.%.*s.xyz", len, needle));
 }
 
-static void
-test_mock (void)
+int
+main (void)
 {
+  size_t i;
+
+  for (i = 0; i < paths_stringset.size; i++)
+    iterate (paths_stringset.buckets[i], test_path);
+  for (i = 0; i < hosts_stringset.size; i++)
+    iterate (hosts_stringset.buckets[i], test_host);
+
+  /**
+   * Now mock hosts and paths with the test data.
+   */
+  paths = (struct lookup){
+    .bitset = &test_paths_bitset, .stringset = &test_paths_stringset,
+  };
+
+  hosts = (struct lookup){
+    .bitset = &test_hosts_bitset, .stringset = &test_hosts_stringset,
+  };
+
   assert (block ("http://foo.com"));
   assert (block ("http://foo.com/"));
 
@@ -94,7 +113,6 @@ test_mock (void)
   assert (block ("http://subdomain.bar.baz.com"));
   assert (!block ("http://bar.baz.com.cn"));
 
-
   assert (block ("http://some-domain.com/test"));
   assert (block ("http://some-domain.com/some/path?test"));
   assert (block ("http://some-domain.com/some/path_test"));
@@ -105,30 +123,5 @@ test_mock (void)
   assert (block ("http://some-domain.com/a/test/c"));
   assert (block ("http://some-domain.com/a/b/test"));
   assert (block ("http://some-domain.com/a/b/test/"));
-}
-
-int
-main (void)
-{
-  size_t i;
-
-  for (i = 0; i < paths_stringset.size; i++)
-    iterate (paths_stringset.buckets[i], test_path);
-  for (i = 0; i < hosts_stringset.size; i++)
-    iterate (hosts_stringset.buckets[i], test_host);
-
-  /**
-   * Now mock hosts and paths with the test data.
-   */
-
-   paths = (struct lookup){
-    .bitset = &test_paths_bitset, .stringset = &test_paths_stringset,
-   };
-
-   hosts = (struct lookup){
-    .bitset = &test_hosts_bitset, .stringset = &test_hosts_stringset,
-   };
-
-
   return 0;
 }
