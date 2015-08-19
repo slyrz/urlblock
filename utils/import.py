@@ -36,6 +36,7 @@ class Rules:
         with open(self.path, 'w') as stream:
             for value in sorted(self.values):
                 stream.write(value + '\n')
+        print("Saved {} rules to {}.".format(len(self.values), self.path))
 
     def __iter__(self):
         return iter(self.values)
